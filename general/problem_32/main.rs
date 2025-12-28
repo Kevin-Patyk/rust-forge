@@ -190,7 +190,13 @@ fn main() {
     }
 }
 
-// The ? operator is both for error propagation and error conversion
+// The ? operator (also called the try operator) is both for unwrapping the success value, error propagation, and error conversion
+
+// When you put ? after an expression that returns a Result or Option:
+// If it's Ok(value) or Some(value) - unwraps and gives you the inner value
+// If it's Err(e) or None - immediately returns the error/None from the current function
+// This is you don't have to use a match statement, making in cleaner and more readable
+// But it only works in functions that return a Result or Option
 
 // If there is an error, it immediately returns it from the current function
     // let contents = fs::read_to_string(path)?;
