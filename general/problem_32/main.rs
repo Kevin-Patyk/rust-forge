@@ -15,8 +15,8 @@ enum ProcessError {
 
 // fmt::Formatter is a buffer/writer that Rust uses to build formatted strings
 // When you implement Display or Debug, Rust gives you this formatter to write to
-// Think of it like a blank canbas - its where you write your formatted output, Rust manages it internally, and you write it piece by piece using write! or writeln!
-// The &mut is import because we are mutating the formatter - each write!() adds more text to the internal buffer
+// Think of it like a blank canvas - its where you write your formatted output, Rust manages it internally, and you write it piece by piece using write! or writeln!
+// The &mut is important because we are mutating the formatter - each write!() adds more text to the internal buffer
 // You append to the formatter and in the end you get a complete string
 
 // Implementing the Display trait for our error enum
@@ -195,7 +195,7 @@ fn main() {
 // When you put ? after an expression that returns a Result or Option:
 // If it's Ok(value) or Some(value) - unwraps and gives you the inner value
 // If it's Err(e) or None - immediately returns the error/None from the current function
-// This is you don't have to use a match statement, making in cleaner and more readable
+// This is so you don't have to use a match statement, making in cleaner and more readable
 // But it only works in functions that return a Result or Option
 
 // If there is an error, it immediately returns it from the current function
@@ -217,7 +217,7 @@ fn main() {
     // }
 
 // Error propagation means passing an error up the call stack to the caller, instead of handling it in the current function
-// "I ecountered an error but instead of dealing with it mysellf, I'm going to return it to whoever called me and let them decide what to do"
+// "I encountered an error but instead of dealing with it myself, I'm going to return it to whoever called me and let them decide what to do"
 // Example:
     // fn read_file(path: &str) -> Result<String, io::Error> {
     //     fs::read_to_string(path)? // Propagates error to caller
