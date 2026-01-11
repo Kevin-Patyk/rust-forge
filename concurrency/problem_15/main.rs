@@ -1,4 +1,4 @@
-// Problem 44: Lock-Free Data Structures (Compare-and-Swap)
+// Problem 45: Lock-Free Data Structures (Compare-and-Swap)
 
 // What are lock-free data structures?
 // So far we have used Mutex to protect shared data. But locks have overhead:
@@ -188,7 +188,8 @@ impl<T> LockFreeStack<T> {
             // null pointer = points to nothing
             // empty stack = top points to nothing
             // As we put more nodes on top, the first node we made (last one in the list) will eventually point to this, meaning the stack is empty
-            top: AtomicPtr::new(ptr::null_mut()),
+            top: AtomicPtr::new(ptr::null_mut()), // ptr::null_mut() creates a null mutable pointer
+            // We are initializing an AtomicPtr with a null pointer, which is a common way to represent "no value yet"
             retry_count: AtomicUsize::new(0),
         }
     }
@@ -224,7 +225,7 @@ impl<T> LockFreeStack<T> {
             // We will update this in the loop before CAS
             next: ptr::null_mut(),
         }));
-        // At this pointer we have a new node (raw pointer) that points to Node { value: T, next: null }
+        // At this point, we have a new node (raw pointer) that points to Node { value: T, next: null }
         // It exists in memory, but not in the stack yet
 
         // Step 2: Loop until we successfully update top -----
@@ -257,7 +258,7 @@ impl<T> LockFreeStack<T> {
             // Step 5: Try to make top point to our new node using CAS
 
             // .compare_exchange() is an atomic operation used to safely update a value only if it currently has the expected value
-            // If the current value = expected, update succeeds
+            // If the current value == expected, update succeeds
             // If the current value != expected, update fails and nothing changes
             // So, if, for this iteration, the current top is the expected current top, we place our new node
             // But, if the current top is not the expected current top (it has changed), we:
@@ -323,7 +324,7 @@ impl<T> LockFreeStack<T> {
     
     // 4. Set our new nodes next field to point to the current top
     // We need to use the unsafe flag since we are using as raw pointer, so there are no safety guarantees
-    // We dereference our current node and access the next field and set it to the current top
+    // We dereference our current (new) node and access the next field and set it to the current top
     //  Before:
         // current_top = [3] → [1] → null
         // new_node = [5] → null
@@ -336,7 +337,7 @@ impl<T> LockFreeStack<T> {
     // We are using .compare_and_exchange() for this.
     // .compare_and_exchange() is an atomic operation used to safely update a value only if it currently has an expected value
     // "Set this value to new only if it is currently equal to expected."
-        // If the current value = expected, update succeeds
+        // If the current value == expected, update succeeds
         // If the current value != expected, update fails and nothing changes
     // In our case, if we match on Ok(), meaning the expected value is our current top (nobody changed it), we update the top to our node
     // If we match on Err(), meaning the expect value is not our current top (someone changed it), we go to the top of the loop, 
@@ -377,7 +378,8 @@ impl<T> LockFreeStack<T> {
             // We do this before CAS
             // We need to use unsafe since we are dealing with raw pointers
             // (*current_top) dereferences the raw pointer
-            // Now, next = raw pointer to the next node (or null if current_top was the last node)
+            // We dereference the raw pointer to access the node's (current top) fields
+            // next gets the raw pointer to the next node (or null if this was the last node)
             // We need this so we know what to point to after removing the top node
             let next = unsafe {
                 (*current_top).next
@@ -427,7 +429,7 @@ impl<T> LockFreeStack<T> {
     }
     // Step 1: Read the current top
     // We read the current top pointer, whiich returns *mut Node<T> (could be null or an address)
-        // Stack: top → [5] → [3] → [1] → null
+        // Stack: top = [5] → [3] → [1] → null
         // current_top = address of Node [5] (e.g., 0x1000)
     // Step 2: Check if empty
     // If the stack is empty, top is null
@@ -448,7 +450,7 @@ impl<T> LockFreeStack<T> {
         //           ^     ^
         //           |     |
         //     current_top next (points to [3])
-        // next = address of Node [3]
+        // next = memory address of Node [3]
     // We do this before CAS since we need to know where to point top after removing the current node
         // Before pop:
         // top = [5] → [3] → [1] → null
