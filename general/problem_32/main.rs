@@ -1,7 +1,8 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
 
 use std::fs;
 use std::io;
-use std::num::ParseIntError;
 use std::fmt;
 use serde_json::Value;
 
@@ -16,7 +17,7 @@ enum ProcessError {
 // fmt::Formatter is a buffer/writer that Rust uses to build formatted strings
 // When you implement Display or Debug, Rust gives you this formatter to write to
 // Think of it like a blank canvas - its where you write your formatted output, Rust manages it internally, and you write it piece by piece using write! or writeln!
-// The &mut is important because we are mutating the formatter - each write!() adds more text to the internal buffer
+// The &mut is import because we are mutating the formatter - each write!() adds more text to the internal buffer
 // You append to the formatter and in the end you get a complete string
 
 // Implementing the Display trait for our error enum
@@ -103,7 +104,7 @@ fn process_user_file(path: &str) -> Result<Vec<User>, ProcessError> {
     // When encountering any issues in this function, all need to be converted to ProcessError
     // This allows the ? operator to work seamlessly throughout the function
     // This is because our function signature expects this
-    // If something return a different error type, this would not work
+    // If something returns a different error type, this would not work
 
     // Reading the file
     // The ? operator will automatically convert an io::Error to ProcessorError
@@ -190,13 +191,7 @@ fn main() {
     }
 }
 
-// The ? operator (also called the try operator) is both for unwrapping the success value, error propagation, and error conversion
-
-// When you put ? after an expression that returns a Result or Option:
-// If it's Ok(value) or Some(value) - unwraps and gives you the inner value
-// If it's Err(e) or None - immediately returns the error/None from the current function
-// This is so you don't have to use a match statement, making in cleaner and more readable
-// But it only works in functions that return a Result or Option
+// The ? operator is both for error propagation and error conversion
 
 // If there is an error, it immediately returns it from the current function
     // let contents = fs::read_to_string(path)?;
@@ -217,7 +212,7 @@ fn main() {
     // }
 
 // Error propagation means passing an error up the call stack to the caller, instead of handling it in the current function
-// "I encountered an error but instead of dealing with it myself, I'm going to return it to whoever called me and let them decide what to do"
+// "I ecountered an error but instead of dealing with it myself, I'm going to return it to whoever called me and let them decide what to do"
 // Example:
     // fn read_file(path: &str) -> Result<String, io::Error> {
     //     fs::read_to_string(path)? // Propagates error to caller

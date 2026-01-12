@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+#![allow(unused_variables)]
 // Rust stack versus heap
 
 // Stack allocation -----
@@ -71,7 +73,7 @@ fn heap_examples() {
     let person = Person {
         name: String::from("Alice"),  // Stack: 24 bytes | Heap: 5 bytes
         age: 30,                       // Stack: 4 bytes
-    }
+    };
 
     // Heap values are MOVED when assigned (not copied)
     let heap_str1 = String::from("move me");
