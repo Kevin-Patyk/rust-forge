@@ -121,6 +121,7 @@ where
 // We need to tell the compiler about T and U even though we don't store them directly - it is only for compile-time reasoning
 // PhantomData is a zero-sized type that says "this struct logically contains or depends on these types, even though they don't appear in any fields"
 // If a generic type parameter is not used in any field, the compiler assumes the struct has no relationship to that type
+// Tells the compiler about types we don't directly store
 
 // 2. Provide a way to initialize
 // This will create a new instance of MapIter with the iterator we are wrapping and the function we are applying
@@ -198,6 +199,7 @@ where
 // We need to tell the compiler about T and U even though we don't store them directly - it is only for compile-time reasoning
 // PhantomData is a zero-sized type that says "this struct logically contains or depends on these types, even though they don't appear in any fields"
 // If a generic type parameter is not used in any field, the compiler assumes the struct has no relationship to that type
+// Tells the compiler about types we don't directly store
 
 // 2. Provide a way to initialize
 impl<I, F, T> FilterIter<I, F, T>
