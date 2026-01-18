@@ -106,6 +106,13 @@ impl ThreadPoolBuilder {
     // We consume self here so that the builder is destroyed and all of its data is moved into ThreadPool
     // Thus, it can no longer be used anymore
     fn build(self) -> ThreadPool {
+        // build() consumes self (takes ownership without returning it)
+        // This is by design:
+            //   1. Prevents calling .build() twice
+            //   2. Makes it clear the builder is done - transition to product
+            //   3. Builder is useless after building anyway
+            //   4. Moves all configuration data into the final ThreadPool
+
         // Use .unwrap_or() to provide defaults if options are None
         // .unwrap_or() is a method on Option<T> that extracts the value if it exists or pvodies a default if it doesn't
             // If Some(value) -> return value
